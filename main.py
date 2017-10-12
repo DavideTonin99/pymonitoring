@@ -1,26 +1,48 @@
 import os
-import sys
 from lxml import etree
+import wmi
 
 
-directory_to_upload = "X:\\"
+cim = wmi.WMI()
 
 
-if __name__ == "__main__":
-    args = sys.argv[1:]
+def show_software_installed():
+    for product in cim.Win32_Product():
+        print("Package name: " + product.Caption)
+        print("Vendor: " + product.Vendor)
+        print("Version" + product.Version)
+        print("Installation date: " + product.InstallDate)
+        print()
+
+
+def show_netconfigs():
+    for config in cim.Win32_NetworkAdapterConfiguration():
+        print("Network Adapter name: " + config.caption)
+        print("DHCP: " + str(config.DHCPEnabled))
+        print("IPEnabled: " + str(config.IPEnabled))
+        print("Service name: " + config.ServiceName)
+        print()
+
+
+def scan_usb():
+    # directory_to_upload = "X:\\"
+
+    # print(os.path.dirname(os.path.abspath(__file__)))
+
+    if not os.path.isdir(os.getcwd() + "/output/"):
+        os.mkdir("output")
 
     # Export of csv, tsv & xml using usbdeview.exe
-    if args == []:
-        args = ["xml", "csv", "tab"]
-        for arg in args:
-            if arg == "csv":
-                os.system("USBDeview.exe /scomma " + os.environ["COMPUTERNAME"] + ".csv")
-            elif arg == "xml":
-                os.system("USBDeview.exe /sxml " + os.environ["COMPUTERNAME"] + ".xml")
-            elif arg == "tab":
-                os.system("USBDeview.exe /stab " + os.environ["COMPUTERNAME"] + ".tsv")
-            else:
-                print("Comando", arg, "non riconosciuto!")
+    args = ["xml", "csv", "tab"]
+    for arg in args:
+        if arg == "csv":
+            os.system("USBDeview.exe /scomma output/" + os.environ["COMPUTERNAME"] + ".csv")
+        elif arg == "xml":
+            os.system("USBDeview.exe /sxml output/" + os.environ["COMPUTERNAME"] + ".xml")
+        elif arg == "tab":
+            os.system("USBDeview.exe /stab output/" + os.environ["COMPUTERNAME"] + ".tsv")
+        else:
+            print("Comando", arg, "non riconosciuto!")
 
 ##    # xml elaboration from another xml file
 ##    doc = etree.parse(os.environ["COMPUTERNAME"] + ".xml")
@@ -32,7 +54,7 @@ if __name__ == "__main__":
 
     # getting filtered devices
     devices = []
-    with open(os.environ["COMPUTERNAME"] + ".tsv") as input_file:
+    with open("output/" + os.environ["COMPUTERNAME"] + ".tsv", "r") as input_file:
         for line in input_file.readlines():
             if "HID (Human Interface Device)" not in line:
                 line = line.split("\t")
@@ -74,9 +96,23 @@ if __name__ == "__main__":
         last_plug_unplug.text = device[7]
 
 
-    output.write(os.environ["COMPUTERNAME"] + "_nohid.xml")
+    output.write("output/" + os.environ["COMPUTERNAME"] + "_nohid.xml")
 
-    os.system("cp " + os.environ["COMPUTERNAME"] + ".xml " + directory_to_upload + "\\xml\\")
-    os.system("cp " + os.environ["COMPUTERNAME"] + ".tsv " + directory_to_upload + "\\tsv\\")
+    #os.system("cp usb/" + os.environ["COMPUTERNAME"] + ".xml " + directory_to_upload + "\\xml\\")
+    #os.system("cp usb/" + os.environ["COMPUTERNAME"] + ".tsv " + directory_to_upload + "\\tsv\\")
 
-    print("Work complete!")
+    # print("Work complete!")
+
+
+if __name__ == "__main__":
+    print("USB Scan...", end="")
+    scan_usb()
+    print(" Done!\n")
+
+    print("Software Scan...\n")
+    show_software_installed()
+    print("\n...Done!\n")
+
+    print("NetConfigs Scan...\n")
+    show_netconfigs()
+    print("\n...Done!\n")
