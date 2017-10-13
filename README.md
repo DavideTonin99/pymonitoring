@@ -8,7 +8,7 @@ Windows tool for monitoring PCs on the internal network.
 - Python lxml library installed
 - Python pywin32 library installed
 - Python wmi library installed
-- [USBDeview.exe](http://www.nirsoft.net/utils/usbdeview.zip)
+- [USBDeview.exe](http://www.nirsoft.net/utils/usbdeview.zip) inside the project's folder
 
 ### To run...
 
