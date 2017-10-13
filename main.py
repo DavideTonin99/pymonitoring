@@ -24,6 +24,22 @@ def show_netconfigs():
         print()
 
 
+def show_os_info():
+    for info in cim.Win32_OperatingSystem():
+        print("Build Number: " + info.BuildNumber)
+        print("Caption: " + info.Caption)
+        print("Computer Name: " + info.CSName)
+        print("Distributed: " + str(info.Distributed))
+        print("Install Date: " + info.InstallDate)
+        print("Number Of Users: " + str(info.NumberOfUsers))
+        print("OS Type: " + str(info.OSType))
+        print("Service Pack: " + str(info.ServicePackMajorVersion))
+        print("Windows Directory: " + info.WindowsDirectory)
+        print("System Directory: " + info.SystemDirectory)
+        print("Version: " + info.Version)
+        
+
+
 def scan_usb():
     # directory_to_upload = "X:\\"
 
@@ -105,6 +121,10 @@ def scan_usb():
 
 
 if __name__ == "__main__":
+    print("OS Scan...", end="")
+    show_os_info()
+    print(" Done!\n")
+    
     print("USB Scan...", end="")
     scan_usb()
     print(" Done!\n")
