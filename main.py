@@ -37,7 +37,6 @@ def show_os_info():
         print("Windows Directory: " + info.WindowsDirectory)
         print("System Directory: " + info.SystemDirectory)
         print("Version: " + info.Version)
-        
 
 
 def scan_usb():
@@ -124,7 +123,7 @@ if __name__ == "__main__":
     print("OS Scan...", end="")
     show_os_info()
     print(" Done!\n")
-    
+
     print("USB Scan...", end="")
     scan_usb()
     print(" Done!\n")
