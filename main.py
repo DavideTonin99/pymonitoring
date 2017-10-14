@@ -39,6 +39,30 @@ def show_os_info():
         print("Version: " + info.Version)
 
 
+def show_bios_info():
+    for info in cim.Win32_BIOS():
+        print("Caption:", info.Caption)
+        print("Manufacturer:", info.Manufacturer)
+        print("BIOS Version:", info.BIOSVersion)
+        print("Release Date:", info.ReleaseDate)
+        print("Serial Number:", info.SerialNumber)
+        print("Status:", info.Status)
+
+
+def show_cpu_info():
+    for info in cim.Win32_Processor():
+        print("Name:", info.Name)
+        print("Description:", info.Description)
+        print("Caption:", info.Caption)
+        print("Address Width:", info.AddressWidth)
+        print("Manufacturer:", info.Manufacturer)
+        print("Max Clock Speed: ", info.MaxClockSpeed)
+        print("Number of Cores: ", info.NumberOfCores)
+        print("Number of Logical Processors:", info.NumberOfLogicalProcessors)
+        print("Revision:", info.Revision)
+        print("Status:", info.Status)
+
+
 def scan_usb():
     # directory_to_upload = "X:\\"
 
@@ -120,18 +144,26 @@ def scan_usb():
 
 
 if __name__ == "__main__":
-    print("OS Scan...", end="")
+    print("\nOS Scan...\n")
     show_os_info()
-    print(" Done!\n")
+    print("\nDone!\n")
 
-    print("USB Scan...", end="")
+    print("\nUSB Scan...\n")
     scan_usb()
-    print(" Done!\n")
+    print("\nDone!\n")
 
-    print("Software Scan...\n")
+    print("\nSoftware Scan...\n")
     show_software_installed()
     print("\n...Done!\n")
 
-    print("NetConfigs Scan...\n")
+    print("\nNetConfigs Scan...\n")
     show_netconfigs()
     print("\n...Done!\n")
+
+    print("\nBIOS Scan...\n")
+    show_bios_info()
+    print("\nDone!\n")
+
+    print("\nCPU Scan...\n")
+    show_cpu_info()
+    print("\nDone!\n")
