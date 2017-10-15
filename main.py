@@ -1,66 +1,164 @@
 import os
 from lxml import etree
 import wmi
-
+import mysql.connector
+from pprint import pprint
 
 cim = wmi.WMI()
+data = {}
+
+
+def upload_to_db(data):
+    pass
 
 
 def show_software_installed():
+
+    software_data = {}
     for product in cim.Win32_Product():
-        print("Package name: " + product.Caption)
-        print("Vendor: " + product.Vendor)
-        print("Version" + product.Version)
-        print("Installation date: " + product.InstallDate)
-        print()
+
+        software_data[product.Caption] = {}
+        # print("Package name: " + product.Caption)
+        software_data[product.Caption]["package_name"] = product.Caption
+        # print("Vendor: " + product.Vendor)
+        software_data[product.Caption]["vendor"] = product.Vendor
+        # print("Version" + product.Version)
+        software_data[product.Caption]["version"] = product.Version
+        # print("Installation date: " + product.InstallDate)
+        software_data[product.Caption]["install_date"] = product.InstallDate
+        # print()
+
+    data[os.environ["COMPUTERNAME"] + "_software_installed"] = software_data
 
 
 def show_netconfigs():
+
+    network_data = {}
     for config in cim.Win32_NetworkAdapterConfiguration():
-        print("Network Adapter name: " + config.caption)
-        print("DHCP: " + str(config.DHCPEnabled))
-        print("IPEnabled: " + str(config.IPEnabled))
-        print("Service name: " + config.ServiceName)
-        print()
+
+        network_data[config.Caption] = {}
+        # print("Network Adapter name: " + config.Caption)
+        network_data[config.Caption]["network_adapter_name"] = config.Caption
+
+        # print("DHCP: " + str(config.DHCPEnabled))
+        network_data[config.Caption]["dhcp"] = config.DHCPEnabled
+
+        # print("IPEnabled: " + str(config.IPEnabled))
+        network_data[config.Caption]["ip_enabled"] = config.IPEnabled
+
+        # print("Service name: " + config.ServiceName)
+        network_data[config.Caption]["service_name"] = config.ServiceName
+        # print()
+
+    data[os.environ["COMPUTERNAME"] + "_network_adapter_configs"] = network_data
 
 
 def show_os_info():
+
+    os_info = {}
     for info in cim.Win32_OperatingSystem():
-        print("Build Number: " + info.BuildNumber)
-        print("Caption: " + info.Caption)
-        print("Computer Name: " + info.CSName)
-        print("Distributed: " + str(info.Distributed))
-        print("Install Date: " + info.InstallDate)
-        print("Number Of Users: " + str(info.NumberOfUsers))
-        print("OS Type: " + str(info.OSType))
-        print("Service Pack: " + str(info.ServicePackMajorVersion))
-        print("Windows Directory: " + info.WindowsDirectory)
-        print("System Directory: " + info.SystemDirectory)
-        print("Version: " + info.Version)
+
+        os_info[info.Caption] = {}
+        # print("Caption: " + info.Caption)
+        os_info[info.Caption]["os_name"] = info.Caption
+
+        #print("Build Number: " + info.BuildNumber)
+        os_info[info.Caption]["build_number"] = info.Caption
+
+        # print("Computer Name: " + info.CSName)
+        os_info[info.Caption]["computer_name"] = info.CSName
+
+        # print("Distributed: " + str(info.Distributed))
+        os_info[info.Caption]["distributed"] = info.Distributed
+
+        # print("Install Date: " + info.InstallDate)
+        os_info[info.Caption]["install_date"] = info.InstallDate
+
+        # print("Number Of Users: " + str(info.NumberOfUsers))
+        os_info[info.Caption]["number_of_users"] = info.NumberOfUsers
+
+        # print("OS Type: " + str(info.OSType))
+        os_info[info.Caption]["os_type"] = info.OSType
+
+        # print("Service Pack: " + str(info.ServicePackMajorVersion))
+        os_info[info.Caption]["service_pack"] = info.ServicePackMajorVersion
+
+        # print("Windows Directory: " + info.WindowsDirectory)
+        os_info[info.Caption]["windows_directory"] = info.WindowsDirectory
+
+        # print("System Directory: " + info.SystemDirectory)
+        os_info[info.Caption]["system_directory"] = info.SystemDirectory
+
+        # print("Version: " + info.Version)
+        os_info[info.Caption]["version"] = info.Version
+
+    data[os.environ["COMPUTERNAME"] + "_os_info"] = os_info
 
 
 def show_bios_info():
+
+    bios_info = {}
     for info in cim.Win32_BIOS():
-        print("Caption:", info.Caption)
-        print("Manufacturer:", info.Manufacturer)
-        print("BIOS Version:", info.BIOSVersion)
-        print("Release Date:", info.ReleaseDate)
-        print("Serial Number:", info.SerialNumber)
-        print("Status:", info.Status)
+
+        bios_info[info.Caption] = {}
+        # print("Caption:", info.Caption)
+        bios_info[info.Caption]["bios_name"] = info.Caption
+
+        # print("Manufacturer:", info.Manufacturer)
+        bios_info[info.Caption]["manufacturer"] = info.Manufacturer
+
+        # print("BIOS Version:", info.BIOSVersion)
+        bios_info[info.Caption]["bios_version"] = info.BIOSVersion
+
+        # print("Release Date:", info.ReleaseDate)
+        bios_info[info.Caption]["release_date"] = info.ReleaseDate
+
+        # print("Serial Number:", info.SerialNumber)
+        bios_info[info.Caption]["serial_number"] = info.SerialNumber
+
+        # print("Status:", info.Status)
+        bios_info[info.Caption]["status"] = info.Status
+
+    data[os.environ["COMPUTERNAME"] + "_bios_info"] = bios_info
 
 
 def show_cpu_info():
+
+    cpu_info = {}
     for info in cim.Win32_Processor():
-        print("Name:", info.Name)
-        print("Description:", info.Description)
-        print("Caption:", info.Caption)
-        print("Address Width:", info.AddressWidth)
-        print("Manufacturer:", info.Manufacturer)
-        print("Max Clock Speed: ", info.MaxClockSpeed)
-        print("Number of Cores: ", info.NumberOfCores)
-        print("Number of Logical Processors:", info.NumberOfLogicalProcessors)
-        print("Revision:", info.Revision)
-        print("Status:", info.Status)
+
+        cpu_info[info.Caption] = {}
+        # print("Caption:", info.Caption)
+        cpu_info[info.Caption]["cpu_model"] = info.Caption
+
+        # print("Name:", info.Name)
+        cpu_info[info.Caption]["cpu_name"] = info.Name
+
+        # print("Description:", info.Description)
+        cpu_info[info.Caption]["description"] = info.Description
+
+        # print("Address Width:", info.AddressWidth)
+        cpu_info[info.Caption]["address_width"] = info.AddressWidth
+
+        # print("Manufacturer:", info.Manufacturer)
+        cpu_info[info.Caption]["manufacturer"] = info.Manufacturer
+
+        # print("Max Clock Speed: ", info.MaxClockSpeed)
+        cpu_info[info.Caption]["max_clock_speed"] = info.MaxClockSpeed
+
+        # print("Number of Cores: ", info.NumberOfCores)
+        cpu_info[info.Caption]["number_of_cores"] = info.NumberOfCores
+
+        # print("Number of Logical Processors:", info.NumberOfLogicalProcessors)
+        cpu_info[info.Caption]["number_of_logical_processors"] = info.NumberOfLogicalProcessors
+
+        # print("Revision:", info.Revision)
+        cpu_info[info.Caption]["revision"] = info.Revision
+
+        # print("Status:", info.Status)
+        cpu_info[info.Caption]["status"] = info.Status
+
+    data[os.environ["COMPUTERNAME"] + "_cpu_info"] = cpu_info
 
 
 def scan_usb():
@@ -144,26 +242,28 @@ def scan_usb():
 
 
 if __name__ == "__main__":
-    print("\nOS Scan...\n")
+    print("\nOS Scan...", end="")
     show_os_info()
-    print("\nDone!\n")
+    print("Done!")
 
-    print("\nUSB Scan...\n")
+    print("USB Scan...", end="")
     scan_usb()
-    print("\nDone!\n")
+    print("Done!")
 
-    print("\nSoftware Scan...\n")
+    print("Software Scan...", end="")
     show_software_installed()
-    print("\n...Done!\n")
+    print("Done!")
 
-    print("\nNetConfigs Scan...\n")
+    print("NetConfigs Scan...", end="")
     show_netconfigs()
-    print("\n...Done!\n")
+    print("Done!")
 
-    print("\nBIOS Scan...\n")
+    print("BIOS Scan...", end="")
     show_bios_info()
-    print("\nDone!\n")
+    print("Done!")
 
-    print("\nCPU Scan...\n")
+    print("CPU Scan...", end="")
     show_cpu_info()
-    print("\nDone!\n")
+    print("Done!")
+
+    # pprint(data)
