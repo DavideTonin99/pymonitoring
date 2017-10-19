@@ -3,6 +3,7 @@ from lxml import etree
 import wmi
 import mysql.connector
 from pprint import pprint
+import json
 
 cim = wmi.WMI()
 data = {}
@@ -267,3 +268,7 @@ if __name__ == "__main__":
     print("Done!")
 
     # pprint(data)
+    r = json.dumps(data)
+
+    with open('dump.json', "w") as output_file:
+        output_file.write(r)
