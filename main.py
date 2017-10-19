@@ -270,5 +270,5 @@ if __name__ == "__main__":
     # pprint(data)
     r = json.dumps(data)
 
-    with open('dump.json', "w") as output_file:
+    with open('output/' + os.environ["COMPUTERNAME"] + '_dump.json', "w") as output_file:
         output_file.write(r)
